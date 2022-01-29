@@ -1,0 +1,11 @@
+/* body{
+    background: #06beb6; 
+    background: -webkit-linear-gradient(to right, #48b1bf, #06beb6);
+    background: linear-gradient(to right, #48b1bf, #06beb6);
+
+} */
+
+.card-header{
+    background-color: darkcyan;
+    height: 2.5rem;
+} 
