@@ -6,7 +6,9 @@ import {
     getDocs,
     addDoc,
     deleteDoc,
-    doc // referencia a un documento
+    doc, // referencia a un documento
+    onSnapshot,
+    query,where
 } from 'firebase/firestore'
 import Swal from 'sweetalert2'
 
@@ -33,57 +35,88 @@ class Firebase {
         // Referencia a la coleccion de firestore
         this.colRef = collection(this.db, 'sfamicom')
 
+        // Consulta a la base de datos
+        this.query = query(this.colRef, where("publisher","==","Rare"));
+
     }
 
-    getDocuments = ()=>{
+    getDocuments = () => {
 
         getDocs(this.colRef)
-        .then((data) => {
-            // console.log(data.docs);
+            .then((data) => {
+                // console.log(data.docs);
 
+                let games = [];
+
+                data.docs.forEach((game) => {
+                    /* console.log(game.data()); */
+                    games.push({ ...game.data(), id: game.id })
+                })
+
+                console.log(games);
+            }).catch(error => {
+                console.log(error.message);
+            })
+    }
+
+    agregarDoc = (juego, formulario) => {
+
+        addDoc(this.colRef, {
+            title: juego.title,
+            publisher: juego.publisher
+        }).then(() => {
+            formulario.reset();
+            Swal.fire(
+                'Good job!',
+                'Juego Agregado',
+                'success'
+            )
+        })
+    }
+
+    deleteDoc = (id, formulario) => {
+
+        const docRef = doc(this.db, 'sfamicom', id);
+        deleteDoc(docRef)
+            .then(() => {
+                formulario.reset();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Juego borrado',
+                })
+            })
+
+    }
+
+    // Obtener datos en timepo real
+    getDocumentsRealTime = () => {
+
+        onSnapshot(this.colRef, (data) => {
             let games = [];
 
             data.docs.forEach((game) => {
                 /* console.log(game.data()); */
                 games.push({ ...game.data(), id: game.id })
             })
-
             console.log(games);
-        }).catch(error => {
-            console.log(error.message);
         })
     }
 
-    agregarDoc = (juego,formulario) =>{
+    // Obtener datos en timepo real con una consulta
+    getDocumentsRealTimeQuery = () => {
 
-        addDoc(this.colRef, {
-            title: juego.title,
-            publisher: juego.publisher
-        }).then(()=>{
-            formulario.reset();
-            Swal.fire(
-                'Good job!',
-                'Juego Agregado',
-                'success'
-              )
-        })
-    }
+        onSnapshot(this.query, (data) => {
+            let games = [];
 
-    deleteDoc = (id, formulario)=>{
-
-        const docRef = doc(this.db, 'sfamicom', id);
-        deleteDoc(docRef)
-            .then( ()=>{
-                formulario.reset();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Juego borrado',
-                  })
+            data.docs.forEach((game) => {
+                /* console.log(game.data()); */
+                games.push({ ...game.data(), id: game.id })
             })
-
+            console.log(games);
+        })
     }
-     
+
 }
 
 export default Firebase
