@@ -8,8 +8,8 @@ import {
     deleteDoc,
     doc, // referencia a un documento
     onSnapshot,
-    query,where,
-    orderBy
+    query, where,
+    orderBy, serverTimestamp // fecha de creacion del documento
 } from 'firebase/firestore'
 import Swal from 'sweetalert2'
 
@@ -31,16 +31,19 @@ class Firebase {
         initializeApp(this.firebaseConfig);
 
         // Inicializar los servicios
-        this.db = getFirestore()
+        this.db = getFirestore();
 
         // Referencia a la coleccion de firestore
-        this.colRef = collection(this.db, 'sfamicom')
+        this.colRef = collection(this.db, 'sfamicom');
 
         // Consulta a la base de datos
-        this.query = query(this.colRef, where("publisher","==","Rare"));
+        this.query = query(this.colRef, where("publisher", "==", "Rare"));
 
         // Consulta orderBy
-        this.query2 = query(this.colRef,orderBy('title','asc'))
+        this.query2 = query(this.colRef, orderBy('title', 'asc'));
+
+        // Consulta ordenada por fecha de creacion del documento
+        this.query3 = query(this.colRef, orderBy('createdAt'));
 
     }
 
@@ -69,7 +72,8 @@ class Firebase {
 
         addDoc(this.colRef, {
             title: juego.title,
-            publisher: juego.publisher
+            publisher: juego.publisher,
+            createdAt: serverTimestamp() // fecha de creación
         }).then(() => {
             formulario.reset();
             Swal.fire(
@@ -124,10 +128,24 @@ class Firebase {
         })
     }
 
-    // documentos ordenado segun nombre del juego de manera ascendente
+    // documentos ordenados segun nombre del juego de manera ascendente
     getDocumentsRealTimeOrderby = () => {
 
         onSnapshot(this.query2, (data) => {
+            let games = [];
+
+            data.docs.forEach((game) => {
+                /* console.log(game.data()); */
+                games.push({ ...game.data(), id: game.id })
+            })
+            console.log(games);
+        })
+    }
+
+    // documentos ordenados segun nombre del juego de manera ascendente
+    getDocumentsRealTimeOrderbyTime = () => {
+
+        onSnapshot(this.query3, (data) => {
             let games = [];
 
             data.docs.forEach((game) => {
