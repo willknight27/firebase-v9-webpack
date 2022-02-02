@@ -8,7 +8,8 @@ import {
     deleteDoc,
     doc, // referencia a un documento
     onSnapshot,
-    query,where
+    query,where,
+    orderBy
 } from 'firebase/firestore'
 import Swal from 'sweetalert2'
 
@@ -38,8 +39,12 @@ class Firebase {
         // Consulta a la base de datos
         this.query = query(this.colRef, where("publisher","==","Rare"));
 
+        // Consulta orderBy
+        this.query2 = query(this.colRef,orderBy('title','asc'))
+
     }
 
+    // console.log de lo elemntos de la colección
     getDocuments = () => {
 
         getDocs(this.colRef)
@@ -59,6 +64,7 @@ class Firebase {
             })
     }
 
+    // agregar un documento a al colección
     agregarDoc = (juego, formulario) => {
 
         addDoc(this.colRef, {
@@ -74,6 +80,7 @@ class Firebase {
         })
     }
 
+    // Borrar un documento de acuerdo a su id
     deleteDoc = (id, formulario) => {
 
         const docRef = doc(this.db, 'sfamicom', id);
@@ -107,6 +114,20 @@ class Firebase {
     getDocumentsRealTimeQuery = () => {
 
         onSnapshot(this.query, (data) => {
+            let games = [];
+
+            data.docs.forEach((game) => {
+                /* console.log(game.data()); */
+                games.push({ ...game.data(), id: game.id })
+            })
+            console.log(games);
+        })
+    }
+
+    // documentos ordenado segun nombre del juego de manera ascendente
+    getDocumentsRealTimeOrderby = () => {
+
+        onSnapshot(this.query2, (data) => {
             let games = [];
 
             data.docs.forEach((game) => {
