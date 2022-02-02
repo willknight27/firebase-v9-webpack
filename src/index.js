@@ -3,6 +3,7 @@ import Firebase from "../models/firebase";
 const firebase = new Firebase
 
 firebase.getDocumentsRealTimeOrderbyTime();
+firebase.getDocumentRealTime();
 
 
 // Agregar juego

@@ -9,7 +9,8 @@ import {
     doc, // referencia a un documento
     onSnapshot,
     query, where,
-    orderBy, serverTimestamp // fecha de creacion del documento
+    orderBy, serverTimestamp, // fecha de creacion del documento
+    getDoc
 } from 'firebase/firestore'
 import Swal from 'sweetalert2'
 
@@ -33,8 +34,14 @@ class Firebase {
         // Inicializar los servicios
         this.db = getFirestore();
 
+
         // Referencia a la coleccion de firestore
         this.colRef = collection(this.db, 'sfamicom');
+
+        //Referencia a un documento (ID)
+        this.docRef = doc(this.db, 'sfamicom','OCb9GYEXAxt0DXRt6jQ7')
+
+
 
         // Consulta a la base de datos
         this.query = query(this.colRef, where("publisher", "==", "Rare"));
@@ -66,6 +73,25 @@ class Firebase {
                 console.log(error.message);
             })
     }
+
+    // console.log de un documento
+    getDocument = () => {
+        getDoc(this.docRef).then( (docData)=>{
+            console.log(`Title: ${docData.data().title}`)
+            console.log(`Publisher: ${docData.data().publisher}`)
+            console.log(`ID: ${docData.id}`)
+        })
+    }
+
+        // console.log de un documento TIEMPO REAL
+        getDocumentRealTime = () => {
+
+            onSnapshot(this.docRef, (docData) => {
+                console.log(`Title: ${docData.data().title}`)
+                console.log(`Publisher: ${docData.data().publisher}`)
+                console.log(`ID: ${docData.id}`)
+            })
+        }
 
     // agregar un documento a al colección
     agregarDoc = (juego, formulario) => {
@@ -155,6 +181,9 @@ class Firebase {
             console.log(games);
         })
     }
+
+    // Obtener un documento
+
 
 }
 
