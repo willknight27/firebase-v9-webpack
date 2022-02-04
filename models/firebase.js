@@ -13,7 +13,7 @@ import {
     getDoc,
     updateDoc
 } from 'firebase/firestore'
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword,signOut, signInWithEmailAndPassword } from 'firebase/auth'
 import Swal from 'sweetalert2'
 
 class Firebase {
@@ -208,6 +208,27 @@ class Firebase {
             })
     }
 
+    login(email, password, formulario){
+        signInWithEmailAndPassword(this.auth,email, password)
+        .then( (cred)=>{
+            console.log('Usuario logeado', cred.user);
+            localStorage.setItem('usuario',JSON.stringify(cred.user))
+
+            formulario.reset()
+        })
+        .catch( (error) =>{
+            console.log(error.message);
+        })
+    }
+
+    logout(){
+        signOut(this.auth).then( ()=>{
+            console.log('Usuario cerró sesión');
+        })
+        .catch( (error)=>{
+            console.log(error.message);
+        })
+    }
 
 }
 

@@ -8,4 +8,8 @@
 .card-header{
     background-color: darkcyan;
     height: 2.5rem;
-} 
+}
+
+.full-width{
+    width: 100%;
+}
