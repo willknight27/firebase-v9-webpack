@@ -10,7 +10,8 @@ import {
     onSnapshot,
     query, where,
     orderBy, serverTimestamp, // fecha de creacion del documento
-    getDoc
+    getDoc,
+    updateDoc
 } from 'firebase/firestore'
 import Swal from 'sweetalert2'
 
@@ -39,7 +40,7 @@ class Firebase {
         this.colRef = collection(this.db, 'sfamicom');
 
         //Referencia a un documento (ID)
-        this.docRef = doc(this.db, 'sfamicom','OCb9GYEXAxt0DXRt6jQ7')
+        this.docRef = doc(this.db, 'sfamicom', 'OCb9GYEXAxt0DXRt6jQ7')
 
 
 
@@ -76,22 +77,22 @@ class Firebase {
 
     // console.log de un documento
     getDocument = () => {
-        getDoc(this.docRef).then( (docData)=>{
+        getDoc(this.docRef).then((docData) => {
             console.log(`Title: ${docData.data().title}`)
             console.log(`Publisher: ${docData.data().publisher}`)
             console.log(`ID: ${docData.id}`)
         })
     }
 
-        // console.log de un documento TIEMPO REAL
-        getDocumentRealTime = () => {
+    // console.log de un documento TIEMPO REAL
+    getDocumentRealTime = () => {
 
-            onSnapshot(this.docRef, (docData) => {
-                console.log(`Title: ${docData.data().title}`)
-                console.log(`Publisher: ${docData.data().publisher}`)
-                console.log(`ID: ${docData.id}`)
-            })
-        }
+        onSnapshot(this.docRef, (docData) => {
+            console.log(`Title: ${docData.data().title}`)
+            console.log(`Publisher: ${docData.data().publisher}`)
+            console.log(`ID: ${docData.id}`)
+        })
+    }
 
     // agregar un documento a al colección
     agregarDoc = (juego, formulario) => {
@@ -182,7 +183,15 @@ class Firebase {
         })
     }
 
-    // Obtener un documento
+    updateDocument(id,title, formulario){
+
+        const docRef =  doc(this.db,'sfamicom',id)
+        updateDoc(docRef, {
+            title
+        }).then( ()=>{
+            formulario.reset()
+        })
+    }
 
 
 }

@@ -29,3 +29,15 @@ deleteGameForm.addEventListener('submit', (e)=>{
 
     firebase.deleteDoc(gameID,deleteGameForm);
 })
+
+// Actualizar un juego
+const updateGameForm = document.querySelector('.update');
+updateGameForm.addEventListener('submit', (e)=>{
+    e.preventDefault()
+
+    const idUpdate = document.querySelector('#gameID-up').value
+    const titleUpdate = document.querySelector('#nameUpdate').value
+
+    firebase.updateDocument(idUpdate,titleUpdate,updateGameForm)
+    
+})
