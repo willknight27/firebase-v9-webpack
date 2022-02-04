@@ -4,6 +4,8 @@ import Firebase from "../models/firebase";
 const firebase = new Firebase
 firebase.getDocuments()
 
+firebase.getDocumentsRealTimeOrderbyTime();
+firebase.getDocumentRealTime();
 
 // Agregar juego
 const addGameForm = document.querySelector('.add');
@@ -27,4 +29,16 @@ deleteGameForm.addEventListener('submit', (e)=>{
     const gameID = document.querySelector('#gameID').value   
 
     firebase.deleteDoc(gameID,deleteGameForm);
+})
+
+// Actualizar un juego
+const updateGameForm = document.querySelector('.update');
+updateGameForm.addEventListener('submit', (e)=>{
+    e.preventDefault()
+
+    const idUpdate = document.querySelector('#gameID-up').value
+    const titleUpdate = document.querySelector('#nameUpdate').value
+
+    firebase.updateDocument(idUpdate,titleUpdate,updateGameForm)
+    
 })

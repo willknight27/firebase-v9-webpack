@@ -13,6 +13,7 @@ import {
     getDoc,
     updateDoc
 } from 'firebase/firestore'
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import Swal from 'sweetalert2'
 
 class Firebase {
@@ -34,6 +35,7 @@ class Firebase {
 
         // Inicializar los servicios
         this.db = getFirestore();
+        this.auth = getAuth();
 
 
         // Referencia a la coleccion de firestore
@@ -191,6 +193,19 @@ class Firebase {
         }).then( ()=>{
             formulario.reset()
         })
+    }
+
+
+    // Registro con email y password
+    registro(email, password, formulario){
+        createUserWithEmailAndPassword(this.auth,email,password)
+            .then( (cred) =>{
+                console.log(cred.user);
+                formulario.reset()
+            })
+            .catch( (error) =>{
+                console.log(error.message);
+            })
     }
 
 
